@@ -54,6 +54,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return new SessionRegistryImpl();
     }
 
+    //自定義的ConcurrentSessionFilter，檢查到重覆登入時，在此登出。
     @Bean
     public MyConcurrentSessionFilter concurrentSessionFilter() {
         MyConcurrentSessionFilter myConcurrentSessionFilter = new MyConcurrentSessionFilter(sessionRegistry(), redirectSessionInformationExpiredStrategy());
@@ -61,6 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return myConcurrentSessionFilter;
     }
 
+    //登入時，AbstractAuthenticationProcessingFilter會自動呼叫delegateStrategies中策略
     @Bean
     public SessionAuthenticationStrategy sas() {
         ConcurrentSessionControlAuthenticationStrategy concurrentSessionControlAuthenticationStrategy = new ConcurrentSessionControlAuthenticationStrategy(sessionRegistry());
@@ -75,11 +77,13 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
         return sas;
     }
 
+    //自定義的登入策略
     @Bean
     public MySessionAuthenticationStrategy mySessionAuthenticationStrategy() {
         return new MySessionAuthenticationStrategy();
     }
 
+    //自定義登出處理器
     @Bean
     public LogoutHandler myLogoutHandler() {
         return new MyLogoutHandler();
